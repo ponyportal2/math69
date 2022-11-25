@@ -54,3 +54,36 @@ int main() {
 //   while
 //   return returnValue;
 // }
+// ------------------------------
+// SQRT
+// ------------------------------
+long double s21_sqrt(double x) {
+  long double multiplier = x / 2;
+  long double prevMultiplier = x;
+  long double product = 0.0;
+  bool isStarted = true;
+  // тут может быть нужно добавить точность, чтобы было
+  // не слишком точно (на самом деле и в других функциях тоже)
+  // (но это не точно :) ;
+  // так же скорее всего нужно отработать случай когда ответ ноль
+  // и подобные краевые :
+  while (product != x) {
+    printf("Product:[%Lf]\n", product);
+    sleep(1);
+    if (product < x) {
+      if (isStarted == false) {
+        prevMultiplier = multiplier;
+        multiplier = (multiplier + prevMultiplier) / 2;
+      }
+      prevMultiplier =  x + 
+    } else {  // if product is >= x
+      prevMultiplier = multiplier;
+      multiplier = (multiplier + prevMultiplier) / 2;
+    }
+
+    isStarted = false;
+    product = multiplier * multiplier;
+    printf("Multiplier:[%Lf]\n\n", multiplier);
+  }
+  return multiplier;
+}
