@@ -66,7 +66,7 @@ int minusone(int n) {
 
 long double s21_cos(double x) {
   long double result = 0;
-  if (x > 2 * S21_M_PI || x < -2 * S21_M_PI) {
+  if (x >= S21_M_PI || x <= S21_M_PI) {
     x = fmod(x, (2 * S21_M_PI));
   }
   for (size_t i = 0; i < 15; i++) {
@@ -77,7 +77,7 @@ long double s21_cos(double x) {
 
 long double s21_sin(double x) {
   long double result = 0;
-  if (x > 2 * S21_M_PI || x < -2 * S21_M_PI) {
+  if (x >= S21_M_PI || x <= S21_M_PI) {
     x = fmod(x, (2 * S21_M_PI));
   }
   for (size_t i = 0; i < 14; i++) {
@@ -85,7 +85,6 @@ long double s21_sin(double x) {
   }
   return result;
 }
-
   
 
 
