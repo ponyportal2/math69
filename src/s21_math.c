@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <unistd.h>
+#define S21_M_PI        3.14159265358979323846264338327950288
 
 // сможет быть неправильно, нужно уточнить:
 #define MAC_LDOUBLE_MIN_ 0.0000000000000000000000000000000001L
@@ -44,3 +45,48 @@ long double s21_fabs(double x) {  // возможно наивная импле�
   }
   return returnValue;
 }
+
+long double factorial_d(long double n) {
+  if (n == 0.0 || n == 1.0) {
+    return 1.0;
+  } else {
+    return n * factorial_d(n - 1);
+  }
+}
+
+int minusone(int n) {
+  int one = 0;
+  if (n % 2 == 0) {
+    one = 1;
+  } else {
+    one = -1;
+  }
+  return one;
+}
+
+long double s21_cos(double x) {
+  long double result = 0;
+  if (x > 2 * S21_M_PI || x < -2 * S21_M_PI) {
+    x = fmod(x, (2 * S21_M_PI));
+  }
+  for (size_t i = 0; i < 15; i++) {
+    result += minusone(i) * pow((double)x, 2 * i) / factorial_d(2 * i);
+  }
+  return result;
+}
+
+long double s21_sin(double x) {
+  long double result = 0;
+  if (x > 2 * S21_M_PI || x < -2 * S21_M_PI) {
+    x = fmod(x, (2 * S21_M_PI));
+  }
+  for (size_t i = 0; i < 14; i++) {
+    result += minusone(i) * pow((double)x, 2 * i + 1) / factorial_d(2 * i + 1);
+  }
+  return result;
+}
+
+  
+
+
+  
