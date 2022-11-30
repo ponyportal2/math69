@@ -86,6 +86,6 @@ long double s21_sin(double x) {
   return result;
 }
   
-
+long double s21_tan(double x) { return (s21_sin(x) / s21_cos(x)); } // в точках близких к pi/2  погрешность большая((( хз че делать, пробывал еще 2 способа приблежения рядами, но они хуже считают
 
   

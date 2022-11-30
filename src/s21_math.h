@@ -6,3 +6,4 @@ long double factorial_d(long double n);
 int minusone(int n);
 long double s21_cos(double x);
 long double s21_sin(double x);
+long double s21_tan(double x);
