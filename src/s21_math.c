@@ -1,9 +1,13 @@
 #include "s21_math.h"
 
+#include <float.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <unistd.h>
-#define S21_M_PI        3.14159265358979323846264338327950288
+#define S21_M_PI 3.14159265358979323846264338327950288
+#define S21_INF (1.0 / 0.0)
+#define S21_NAN __builtin_nanf("0x7fc00000")
+#define S21_EPS 1e-9
 
 // сможет быть неправильно, нужно уточнить:
 #define MAC_LDOUBLE_MIN_ 0.0000000000000000000000000000000001L
@@ -85,7 +89,26 @@ long double s21_sin(double x) {
   }
   return result;
 }
-  
-long double s21_tan(double x) { return (s21_sin(x) / s21_cos(x)); } // в точках близких к pi/2  погрешность большая((( хз че делать, пробывал еще 2 способа приблежения рядами, но они хуже считают
 
-  
+long double s21_tan(double x) {
+  return (s21_sin(x) / s21_cos(x));
+}  // в точках близких к pi/2  погрешность большая((( хз че делать, пробывал еще
+   // 2 способа приблежения рядами, но они хуже считают
+long double s21_exp(double x) {
+  long double add_value = 1;
+  long double series = 1;
+  long double i = 1;
+  while (fabs(add_value) > S21_EPS) {
+    add_value *= x / i;
+    i++;
+    series += add_value;
+    if (series > DBL_MAX) {
+      series = S21_INF;
+      break;
+    }
+  }
+  if (x < 0) {
+    series = 1. / series;
+  }
+  return series;
+}
