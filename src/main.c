@@ -16,8 +16,8 @@ long double s21_exp(double x);
 long double s21_log(double x);
 
 int main() {
-    printf("%Lf\n", s21_log(-1));
-    printf("%f\n", log(-1));
+    printf("%Lf\n", s21_log(3));
+    printf("%f\n", log(3));
  // printf("%f\n", atan(-2));
  // printf("%Lf\n", s21_atan(-2));
     return 0;
@@ -184,22 +184,19 @@ long double s21_exp(double x) {
 
 
 long double s21_log(double x) {
-    long double rememberX = x;
-    long double returnValue = x;
-    int minusOne = 1;
-    if (x < 0) {
-        returnValue = NAN;
-    }
     if (x - 2 < eps) {
         x = x - 1;
     }
-    if (x - 1 < eps && returnValue != NAN) {
+    long double rememberX = x;
+    long double returnValue = x;
+    int minusOne = 1;
+    if (x - 1 < eps) {
     for (int k = 2; k <= 10000; k++) {
         x = x * rememberX;
         minusOne = minusOne * (-1);
         returnValue = returnValue + minusOne * x / k;
     } 
-    } else if (returnValue != NAN) {
+    } else {
         x = (x - 1)/(x + 1);
         returnValue = s21_log(1 + x) - s21_log(1 - x);
     }
