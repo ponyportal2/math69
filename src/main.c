@@ -13,10 +13,11 @@ long double s21_atan(double x);
 long double fact(int n);
 long double s21_pow(double base, double exp);
 long double s21_exp(double x);
+long double s21_log(double x);
 
 int main() {
-    printf("%Lf\n", s21_pow(2.1, 2.1111));
-    printf("%f\n", pow(2.1, 2.1111));
+    printf("%Lf\n", s21_log(-1));
+    printf("%f\n", log(-1));
  // printf("%f\n", atan(-2));
  // printf("%Lf\n", s21_atan(-2));
     return 0;
@@ -112,7 +113,7 @@ long double s21_atan(double x) {
     */
     return sign * acos(1/sqrt(1 + x * x));
 }
-
+/*
 long double s21_pow(double base, double exp) {
     long double celoe = floor(fabs(exp));
     long double drob = fabs(exp) - celoe;
@@ -138,7 +139,7 @@ long double s21_pow(double base, double exp) {
             drob = drob / 5;
             znamenatel = znamenatel / 5;
         }
-        long double forBase = s21_pow(base, drob);
+        long double forBase = s21_exp(base * log(drob));
         long double startX;
         if (fabs(base) <= 1) {
             startX = 1;
@@ -149,7 +150,7 @@ long double s21_pow(double base, double exp) {
         bool end = false;
         while (!end) {
             oldX = startX;
-            startX = 1/znamenatel * ((znamenatel - 1) * startX + forBase/s21_pow(startX, znamenatel - 1));
+            startX = 1/znamenatel * ((znamenatel - 1) * startX + forBase/s21_exp(startX * log(znamenatel - 1)));
             if (!(oldX - startX > eps)) {
                 end = true;
             }
@@ -164,13 +165,43 @@ long double s21_pow(double base, double exp) {
     }
     return returnValue;
 }
-
-/*
-long double s21_pow(double base, double e) {
-    return exp(log(base) * e);
-}
 */
 
+long double s21_pow(double base, double e) {
+    return s21_exp(s21_log(base) * e);
+}
+
+
 long double s21_exp(double x) {
-    return s21_pow(EXP, x);
+    long double rememberX = x;
+    long double returnValue = 1 + x;
+    for (int k = 2; k <= 150; k++) {
+        x = x * rememberX;
+        returnValue = returnValue + x/fact(k);
+    }
+    return returnValue;
+}
+
+
+long double s21_log(double x) {
+    long double rememberX = x;
+    long double returnValue = x;
+    int minusOne = 1;
+    if (x < 0) {
+        returnValue = NAN;
+    }
+    if (x - 2 < eps) {
+        x = x - 1;
+    }
+    if (x - 1 < eps && returnValue != NAN) {
+    for (int k = 2; k <= 10000; k++) {
+        x = x * rememberX;
+        minusOne = minusOne * (-1);
+        returnValue = returnValue + minusOne * x / k;
+    } 
+    } else if (returnValue != NAN) {
+        x = (x - 1)/(x + 1);
+        returnValue = s21_log(1 + x) - s21_log(1 - x);
+    }
+    return returnValue;
 }
