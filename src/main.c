@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #define s21_PI 3.141592654
 #define eps 0.0000001
+#define EXP 2.7182818
 
 int s21_abs(int x);
 long double s21_asin(double x);
@@ -11,10 +12,11 @@ long double s21_acos(double x);
 long double s21_atan(double x);
 long double fact(int n);
 long double s21_pow(double base, double exp);
+long double s21_exp(double x);
 
 int main() {
-    printf("%Lf\n", s21_pow(2, -2.999));
-    printf("%f\n", pow(2, -2.999));
+    printf("%Lf\n", s21_pow(2.1, 2.1111));
+    printf("%f\n", pow(2.1, 2.1111));
  // printf("%f\n", atan(-2));
  // printf("%Lf\n", s21_atan(-2));
     return 0;
@@ -119,7 +121,7 @@ long double s21_pow(double base, double exp) {
     long double returnValue = 1.0;
     long double ValueDrob = 1.0;
     long double startX = 1;
-    for (double i = 1; i <= celoe; i++) {
+    for (double i = 1; i <= celoe + eps; i++) {
         returnValue = returnValue * base;
     }
     if (drob > eps) {
@@ -137,7 +139,12 @@ long double s21_pow(double base, double exp) {
             znamenatel = znamenatel / 5;
         }
         long double forBase = s21_pow(base, drob);
-        long double startX = forBase/znamenatel;
+        long double startX;
+        if (fabs(base) <= 1) {
+            startX = 1;
+        } else {
+           startX = forBase/znamenatel;
+        }
         long double oldX;
         bool end = false;
         while (!end) {
@@ -156,4 +163,14 @@ long double s21_pow(double base, double exp) {
         returnValue = 1;
     }
     return returnValue;
+}
+
+/*
+long double s21_pow(double base, double e) {
+    return exp(log(base) * e);
+}
+*/
+
+long double s21_exp(double x) {
+    return s21_pow(EXP, x);
 }
