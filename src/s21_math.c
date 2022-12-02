@@ -81,7 +81,7 @@ long double s21_cos(double x) {
 
 long double s21_sin(double x) {
   long double result = 0;
-  if (x >= S21_M_PI || x <= S21_M_PI) {
+  if (x >= 2 * S21_M_PI || x <= -2 * S21_M_PI) {
     x = fmod(x, (2 * S21_M_PI));
   }
   for (size_t i = 0; i < 14; i++) {
@@ -98,17 +98,16 @@ long double s21_exp(double x) {
   long double add_value = 1;
   long double series = 1;
   long double i = 1;
-  while (fabs(add_value) > S21_EPS) {
+  long double old = 0;
+  while (fabs(add_value) > S21_EPS && series - old != 0) {
     add_value *= x / i;
     i++;
+    old = series;
     series += add_value;
     if (series > DBL_MAX) {
       series = S21_INF;
       break;
     }
-  }
-  if (x < 0) {
-    series = 1. / series;
   }
   return series;
 }
