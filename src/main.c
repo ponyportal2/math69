@@ -2,9 +2,9 @@
 #include <stdlib.h>
 #include <math.h>
 #include <stdbool.h>
-#define s21_PI 3.141592654
+#define s21_PI 3.14159265358979323846264338327950288
 #define eps 0.0000001
-#define EXP 2.7182818
+#define EXP 2.7182818284590452353602874713527
 
 int s21_abs(int x);
 long double s21_asin(double x);
@@ -14,10 +14,11 @@ long double fact(int n);
 long double s21_pow(double base, double exp);
 long double s21_exp(double x);
 long double s21_log(double x);
+long double s21_sqrt(double x);
 
 int main() {
-    printf("%Lf\n", s21_log(1));
-    printf("%f\n", log(1));
+    printf("%Lf\n", s21_sqrt(4010));
+    printf("%f\n", sqrt(4010));
  // printf("%f\n", atan(-2));
  // printf("%Lf\n", s21_atan(-2));
     return 0;
@@ -175,9 +176,13 @@ long double s21_pow(double base, double e) {
 long double s21_exp(double x) {
     long double rememberX = x;
     long double returnValue = 1 + x;
-    for (int k = 2; k <= 150; k++) {
+   /* for (int k = 2; k <= 150; k++) {
         x = x * rememberX;
         returnValue = returnValue + x/fact(k);
+    }*/
+    returnValue = 1;
+    for (int i = 150; i > 0; --i) {
+        returnValue = 1 + x * returnValue / i;
     }
     return returnValue;
 }
@@ -210,4 +215,22 @@ long double s21_log(double x) {
     }
     }
     return returnValue;
+}
+
+long double s21_sqrt(double x) {
+    long double startX;
+    startX = x/2;
+    long double oldX;
+    bool end = false;
+    while (!end && startX > 0) {
+        oldX = startX;
+        startX = 1./2 * (startX + x/startX);
+        if (!(oldX - startX > eps)) {
+            end = true;
+        }
+    }
+    if (startX < 0) {
+        startX = NAN;
+    }
+    return startX;
 }
