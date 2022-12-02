@@ -10,15 +10,31 @@ int s21_abs(int x);
 long double s21_asin(double x);
 long double s21_acos(double x);
 long double s21_atan(double x);
+long double s21_atan1(double x);
 long double fact(int n);
 long double s21_pow(double base, double exp);
 long double s21_exp(double x);
 long double s21_log(double x);
 long double s21_sqrt(double x);
+long double s21_tan(double x);
+
+
 
 int main() {
-    printf("%Lf\n", s21_sqrt(4010));
-    printf("%f\n", sqrt(4010));
+    long double rez = 0;
+    long double res = 0;
+    double count = 0;
+    for (double i = 0; i <= 1000; i += 0.001) {
+        res = fabsl(s21_sqrt(i) - sqrt(i));
+        if (res > rez) {
+            rez = res;
+            count = i;
+        }
+    }
+    printf("%lf %.40Lf\n", count, rez);
+    printf("%.30Lf\n", s21_atan(-6.9));
+    printf("%.30Lf\n", s21_atan1(-6.9)); //вроде как хуже
+    printf("%.30f\n", atan(-6.9));
  // printf("%f\n", atan(-2));
  // printf("%Lf\n", s21_atan(-2));
     return 0;
@@ -62,7 +78,7 @@ long double s21_asin(double x) {
     if (returnValue != NAN) {
     double rememberX = x;
     long double taylor = x;
-    for (int k = 1; k <= 27; k++) {
+    for (int k = 1; k <= 29; k++) {
         n = 1;
         n1 = 1;
         returnValue = returnValue + taylor;
@@ -88,30 +104,62 @@ long double s21_acos(double x) {
     return (s21_PI/2 - s21_asin(x));
 }
 
-long double s21_atan(double x) {
+long double s21_atan1(double x) {
     int minusOne = 1;
     bool rememberMore = false;
     double sign = 1;
+    double startX = x;
     if (x < 0) {
         sign = -1;
-
     }
-    /*
+    double rememberX = x;
     if (fabs(x) > 1) {
         x = 1/x;
         rememberMore = true;
     }
     long double returnValue = x;
-    double rememberX = x;
-    for (int k = 2; k <= 500000; k++) {
+    if (fabs(startX) < 1.) {
+    for (int k = 2; k <= 5000; k++) {
         minusOne = minusOne * (-1);
         x = x * rememberX * rememberX;
         returnValue = returnValue + minusOne * (x/(2 * k - 1));
     }
+    } else if (fabs(startX) > 1.) {
+        for (int k = 2; k <= 5000; k++) {
+        minusOne = minusOne * (-1);
+        x = x / (rememberX * rememberX);
+        returnValue = returnValue + minusOne * (x/(2 * k - 1));
+    }
+    returnValue = s21_PI * fabs(rememberX)/(2*rememberX) - returnValue;
+    }
+   /*
+long double sum_atan = 0;
+if (-1. < x && x < 1.) {
+    for (int i = 0; i < 5000; i++) {
+        sum_atan += pow(-1, i) * pow(x, 1 + 2*i)/(1 + 2*i);
+    }
+} else {
+    for (int i = 0; i < 7000; i++) {
+        sum_atan += pow(-1, i) * pow(x, -1 - 2*i)/(1 + 2*i);
+    }
+    sum_atan = s21_PI *sqrt(x*x)/(2*x) - sum_atan;
+}
+*/
+    /*
     if (rememberMore) {
         returnValue = (s21_PI/2 - sign * returnValue) * sign;
     }
     */
+    
+   // return sign * acos(1/sqrt(1 + x * x));
+   return returnValue;
+}
+long double s21_atan(double x) {
+    double sign = 1;
+    if (x < 0) {
+        sign = -1;
+
+    }
     return sign * acos(1/sqrt(1 + x * x));
 }
 /*
@@ -219,18 +267,36 @@ long double s21_log(double x) {
 
 long double s21_sqrt(double x) {
     long double startX;
+    
     startX = x/2;
     long double oldX;
     bool end = false;
-    while (!end && startX > 0) {
-        oldX = startX;
+    for (int i = 1; i < 1000; i++){
         startX = 1./2 * (startX + x/startX);
-        if (!(oldX - startX > eps)) {
-            end = true;
-        }
     }
+    /*
     if (startX < 0) {
         startX = NAN;
+    } else if (x < eps) {
+        startX = 0;
+    } else {
+        startX = s21_pow(x, 1./2);
     }
+    */
     return startX;
 }
+/*
+long double s21_tan(double x) {
+    long double B = 1;
+    long double sumB = 0;
+    for (int n = 1; n < 50; n++) {
+        for (int k = 1; k <= n; k++) {
+            sumB = sumB + fact(n+1)/(fact(k+1)*fact(n-k)) * B;
+        }
+        B = -1/(n+1)*sumB;
+        if (n % 2 == 0) {
+
+        }
+    }
+}
+*/
