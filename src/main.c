@@ -25,17 +25,17 @@ int main() {
     long double rez = 0;
     long double res = 0;
     double count = 0;
-    for (double i = 0; i <= 1; i += 0.000001) {
-        res = fabsl(s21_log(i) - log(i));
+    for (double i = 0; i <= 40; i += 1) {
+        res = fabsl(s21_pow(2, i) - pow(2, i));
         if (res > rez) {
             rez = res;
             count = i;
         }
     }
     printf("%lf %.40Lf\n", count, rez);
-    printf("%.30Lf\n", s21_log(0.000001));
+    printf("%.30Lf\n", s21_pow(5, 23));
    // printf("%.30Lf\n", s21_atan1(-6.9)); //вроде как хуже
-    printf("%.40f\n", log(0.000001));
+    printf("%.30f\n", pow(5, 23));
  // printf("%f\n", atan(-2));
  // printf("%Lf\n", s21_atan(-2));
     return 0;
@@ -241,24 +241,25 @@ long double s21_log(double x) {
     long double returnValue = eps;
     long double rememberX;
     long double counterStepen = 0;
-
-    while ((int)x > eps){
-        counterStepen++;
-        x = x / 10;
-    }
-
+long double counterMinusStepen = 0;
   //  if (x - 2. < eps && x - 2. > -eps) {
    //     returnValue = 0.693147180559945286226763982995;
    // } else {
     if (x < 0) {
         returnValue = NAN;
-    } else if (x < eps && x > -eps) {
+    } else if (x == 0) { // вот тут получается надо именно 0
         returnValue = -INFINITY;
     }
     if (returnValue == eps) {
-    if (x - 2 < eps) {
-        x = x - 1;
+    while ((int)x < 0.1) {
+        counterMinusStepen++;
+        x = x * 10;
     }
+    while ((int)x > eps){
+        counterStepen++;
+        x = x / 10;
+    }
+    x = x - 1;
     rememberX = x;
     returnValue = x;
     int minusOne = 1;
@@ -274,7 +275,7 @@ long double s21_log(double x) {
  //   }
     }
  //   }
-    return returnValue + counterStepen * lnTEN;
+    return returnValue + counterStepen * lnTEN - counterMinusStepen * lnTEN;
 }
 
 long double s21_sqrt(double x) {
