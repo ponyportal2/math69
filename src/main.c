@@ -5,6 +5,7 @@
 #define s21_PI 3.14159265358979323846264338327950288
 #define eps 0.0000001
 #define EXP 2.7182818284590452353602874713527
+#define lnTEN 2.3025850929940459010936137929093092679977
 
 int s21_abs(int x);
 long double s21_asin(double x);
@@ -24,7 +25,7 @@ int main() {
     long double rez = 0;
     long double res = 0;
     double count = 0;
-    for (double i = 2; i <= 1000; i += 0.1) {
+    for (double i = 0; i <= 1; i += 0.000001) {
         res = fabsl(s21_log(i) - log(i));
         if (res > rez) {
             rez = res;
@@ -32,9 +33,9 @@ int main() {
         }
     }
     printf("%lf %.40Lf\n", count, rez);
-    printf("%.30Lf\n", s21_log(2));
+    printf("%.30Lf\n", s21_log(0.000001));
    // printf("%.30Lf\n", s21_atan1(-6.9)); //вроде как хуже
-    printf("%.30f\n", log(2));
+    printf("%.40f\n", log(0.000001));
  // printf("%f\n", atan(-2));
  // printf("%Lf\n", s21_atan(-2));
     return 0;
@@ -239,9 +240,16 @@ long double s21_exp(double x) {
 long double s21_log(double x) {
     long double returnValue = eps;
     long double rememberX;
-    if (x - 2. < eps && x - 2. > -eps) {
-        returnValue = 0.693147180559945286226763982995;
-    } else {
+    long double counterStepen = 0;
+
+    while ((int)x > eps){
+        counterStepen++;
+        x = x / 10;
+    }
+
+  //  if (x - 2. < eps && x - 2. > -eps) {
+   //     returnValue = 0.693147180559945286226763982995;
+   // } else {
     if (x < 0) {
         returnValue = NAN;
     } else if (x < eps && x > -eps) {
@@ -254,19 +262,19 @@ long double s21_log(double x) {
     rememberX = x;
     returnValue = x;
     int minusOne = 1;
-    if (x - 1 < eps) {
-    for (int k = 2; k <= 10000; k++) { //чем большее число в логарифм? тем больше шагов надо тут делать
+  //  if (x - 1 < eps) {
+    for (int k = 2; k <= 1000; k++) { //чем большее число в логарифм? тем больше шагов надо тут
         x = x * rememberX;
         minusOne = minusOne * (-1);
         returnValue = returnValue + minusOne * x / k;
     } 
-    } else {
-        x = (x - 1)/(x + 1);
-        returnValue = s21_log(1 + x) - s21_log(1 - x);
+ //   } else {
+  //      x = (x - 1)/(x + 1);
+  //      returnValue = s21_log(1 + x) - s21_log(1 - x);
+ //   }
     }
-    }
-    }
-    return returnValue;
+ //   }
+    return returnValue + counterStepen * lnTEN;
 }
 
 long double s21_sqrt(double x) {
