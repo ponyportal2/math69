@@ -1,13 +1,10 @@
 #include "s21_math.h"
 
 #include <float.h>
+#include <math.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <unistd.h>
-#define S21_M_PI 3.14159265358979323846264338327950288
-#define S21_INF (1.0 / 0.0)
-#define S21_NAN __builtin_nanf("0x7fc00000")
-#define S21_EPS 1e-9
 
 // сможет быть неправильно, нужно уточнить:
 #define MAC_LDOUBLE_MIN_ 0.0000000000000000000000000000000001L
@@ -28,10 +25,14 @@ long double s21_ceil(double x) {
 
   // тут нужно поставить минимальный по размеру long double, может зависеть от
   // системы, тогда надо сделать вилку:
-  if (rightPart > MAC_LDOUBLE_MIN_) {
+  if (x >= 0) {
+  if (rightPart >= DBL_MIN ) {
     returnValue = (long double)leftPartInt + 1;
   } else {
     returnValue = x;
+  }
+  } else if (x < 0) {
+    returnValue = leftPartInt;
   }
   return returnValue;
 }
@@ -99,15 +100,69 @@ long double s21_exp(double x) {
   long double series = 1;
   long double i = 1;
   long double old = 0;
-  while (fabs(add_value) > S21_EPS && series - old != 0) {
+  while (fabs((double)add_value) > S21_EPS && series - old != 0) {
     add_value *= x / i;
     i++;
     old = series;
     series += add_value;
-    if (series > DBL_MAX) {
+    if (series > DBL_MAX || series < -DBL_MAX) {
+      if (x > 0) {
       series = S21_INF;
       break;
-    }
+      } else if (x < 0) {
+        series = 0;
+      }
+    } 
   }
   return series;
+}
+
+long double s21_asin(double x) {
+  long double returnValue = 0;
+  bool rememberMore = false;
+  long long int four = 1;
+  long double n, n1;
+  double sign = 1;
+  if (x < 0) {
+    sign = -1;
+  }
+  if (fabs(x) > 0.8 && fabs(x) <= 1) {
+    x = sqrt(1 - x * x);
+    rememberMore = true;
+  } else if (fabs(x) > 1) {
+    returnValue = NAN;
+  }
+  if (returnValue != NAN) {
+    double rememberX = x;
+    long double taylor = x;
+    for (int k = 1; k <= 29; k++) {
+      n = 1;
+      n1 = 1;
+      returnValue = returnValue + taylor;
+      x = x * rememberX * rememberX;
+      n = factorial_d(k);
+      n1 = factorial_d(k);
+      n = n / n1;
+      for (int i = k + 1; i <= 2 * k; i++) {
+        n = n * i;
+      }
+      n = n / n1;
+      four = 4 * four;
+      taylor = (n * x) / (four * (2 * k + 1));
+    }
+    if (rememberMore) {
+      returnValue = sign * (S21_M_PI / 2 - returnValue);
+    }
+  }
+  return returnValue;
+}
+
+long double s21_acos(double x) { return (S21_M_PI / 2 - s21_asin(x)); }
+
+long double s21_atan(double x) {
+  double sign = 1;
+  if (x < 0) {
+    sign = -1;
+  }
+  return sign * acos(1 / sqrt(1 + x * x));
 }
