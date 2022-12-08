@@ -18,29 +18,43 @@ int s21_abs(int x) {  // возможно наивная имплементац�
 }
 
 long double s21_ceil(double x) {
-  long double returnValue = 0.0L;
+  long double returnValue = x;
   long long leftPartInt = x;              // getting the floor value
   long double leftPartLod = leftPartInt;  // Lod stands for long double
   long double rightPart = x - leftPartLod;
 
   // тут нужно поставить минимальный по размеру long double, может зависеть от
   // системы, тогда надо сделать вилку:
-  if (x >= 0) {
-  if (rightPart >= DBL_MIN ) {
-    returnValue = (long double)leftPartInt + 1;
-  } else {
-    returnValue = x;
-  }
-  } else if (x < 0) {
+  if (x >= 0 && x != DBL_MAX) {
+    if (rightPart >= DBL_MIN) {
+      returnValue = (long double)leftPartInt + 1;
+    } else {
+      returnValue = x;
+    }
+  } else if (x < 0 && x != -DBL_MAX) {
     returnValue = leftPartInt;
   }
   return returnValue;
 }
 
 long double s21_floor(double x) {
+  long double returnValue = x;
   long long leftPartInt = x;              // getting the floor value
   long double leftPartLod = leftPartInt;  // Lod stands for long double
-  return leftPartLod;
+  long double rightPart = x - leftPartLod;
+
+  // тут нужно поставить минимальный по размеру long double, может зависеть от
+  // системы, тогда надо сделать вилку:
+  if (x < 0 && x != -DBL_MAX) {
+    if (rightPart >= DBL_MIN || rightPart <= -DBL_MIN) {
+      returnValue = (long double)leftPartInt - 1;
+    } else {
+      returnValue = x;
+    }
+  } else if (x > 0 && x != DBL_MAX) {
+    returnValue = leftPartInt;
+  }
+  return returnValue;
 }
 
 long double s21_fabs(double x) {  // возможно наивная имплементация
@@ -107,12 +121,12 @@ long double s21_exp(double x) {
     series += add_value;
     if (series > DBL_MAX || series < -DBL_MAX) {
       if (x > 0) {
-      series = S21_INF;
-      break;
+        series = S21_INF;
+        break;
       } else if (x < 0) {
         series = 0;
       }
-    } 
+    }
   }
   return series;
 }
