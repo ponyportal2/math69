@@ -2,10 +2,14 @@
 #include <stdlib.h>
 #include <math.h>
 #include <stdbool.h>
+#include <float.h>
 #define s21_PI 3.14159265358979323846264338327950288
+#define S21_M_PI 3.14159265358979323846264338327950288
 #define eps 0.0000001
 #define EXP 2.7182818284590452353602874713527
 #define lnTEN 2.3025850929940459010936137929093092679977
+#define MAC_LDOUBLE_MIN_ 0.0000000000000000000000000000000001L
+
 
 int s21_abs(int x);
 long double s21_asin(double x);
@@ -25,17 +29,22 @@ int main() {
     long double rez = 0;
     long double res = 0;
     double count = 0;
-    for (double i = 0; i <= 40; i += 1) {
-        res = fabsl(s21_pow(2, i) - pow(2, i));
+    /*for (double i = -30; i <= 40; i += 0.001) {
+        res = fabsl(s21_atan(i) - atan(i));
         if (res > rez) {
             rez = res;
             count = i;
         }
-    }
-    printf("%lf %.40Lf\n", count, rez);
-    printf("%.30Lf\n", s21_pow(5, 23));
+    }*/
+  // printf("%.40Lf\n", s21_exp(80));
+  // printf("%.40f\n", exp(80));
+    printf("%lf\n", pow(-0.2, -DBL_MAX));
+    printf("%Lf\n", s21_pow(-0.2, -DBL_MAX));
+   // printf("%.30Lf\n", s21_exp(100));
    // printf("%.30Lf\n", s21_atan1(-6.9)); //вроде как хуже
-    printf("%.30f\n", pow(5, 23));
+ //   printf("%.30f\n", exp(100));
+ //printf("%Lf\n",s21_tan(-7*s21_PI/3));
+ // printf("%f\n",tan(-7*s21_PI/3));
  // printf("%f\n", atan(-2));
  // printf("%Lf\n", s21_atan(-2));
     return 0;
@@ -161,7 +170,7 @@ long double s21_atan(double x) {
         sign = -1;
 
     }
-    return sign * acos(1/sqrt(1 + x * x));
+    return sign * s21_acos(1/s21_sqrt(1 + x * x));
 }
 /*
 long double s21_pow(double base, double exp) {
@@ -218,22 +227,58 @@ long double s21_pow(double base, double exp) {
 */
 
 long double s21_pow(double base, double e) {
-    return s21_exp(s21_log(base) * e);
+    long double returnValue;
+    int infinitySign = 1;
+    if (base == -INFINITY && fabs(e) == 1) {
+        infinitySign = -1;
+    }
+    if (base == 0. && e == 0.) {
+        returnValue = 1.;
+    } else if ((fabs(base) == 1. && fabs(e) == INFINITY) || (base == 1. && e != e)) {
+        returnValue = 1.;
+    } else if ((fabs(base) > 1. && e == INFINITY) || (fabs(base) < 1. && e == -INFINITY)) {
+        returnValue = INFINITY;
+    } else if ((fabs(base) < 1. && e == INFINITY) || (fabs(base) > 1. && e == -INFINITY)) {
+        returnValue = 0.;
+    } else if (fabs(base) == INFINITY && e == 0.) {
+        returnValue = 1.;
+    } else if (fabs(base) == INFINITY && e < 0.) {
+        returnValue = 0.;
+    } else if (fabs(base) > 1. && e == -DBL_MAX) {
+        returnValue = 0.;
+    } else if (fabs(base) == 1. && e == -DBL_MAX) {
+        returnValue = 1.;
+    } else if (base > -1. && base < 0. && e == -DBL_MAX) {
+        returnValue = INFINITY;
+    } else {
+        returnValue = s21_exp(s21_log(base) * e);
+    }
+    return infinitySign * returnValue;
 }
 
 
 long double s21_exp(double x) {
+     /*
     long double rememberX = x;
-    long double returnValue = 1 + x;
-   /* for (int k = 2; k <= 150; k++) {
+    long double returnValue = 1. + x;
+   for (int k = 2; k <= 150; k++) {
         x = x * rememberX;
         returnValue = returnValue + x/fact(k);
-    }*/
+    }
     returnValue = 1;
     for (int i = 150; i > 0; --i) {
-        returnValue = 1 + x * returnValue / i;
+        returnValue = 1. + x * returnValue / i;
     }
     return returnValue;
+*/
+
+    double sum = 1;
+    double term = 1;
+    for (int i = 1; i < 150; ++i) {
+        term *= x / i;
+        sum += term;
+    }
+    return sum;
 }
 
 
@@ -245,17 +290,23 @@ long double counterMinusStepen = 0;
   //  if (x - 2. < eps && x - 2. > -eps) {
    //     returnValue = 0.693147180559945286226763982995;
    // } else {
+    if (x != x) {
+        returnValue = NAN;
+    } else if (!(x != x) && x - x != x - x) {
+        returnValue = INFINITY;
+    } else {
+      //  
     if (x < 0) {
         returnValue = NAN;
     } else if (x == 0) { // вот тут получается надо именно 0
         returnValue = -INFINITY;
     }
     if (returnValue == eps) {
-    while ((int)x < 0.1) {
+    while (floor(x) < 0.1) {
         counterMinusStepen++;
         x = x * 10;
     }
-    while ((int)x > eps){
+    while (floor(x) > eps){
         counterStepen++;
         x = x / 10;
     }
@@ -268,29 +319,42 @@ long double counterMinusStepen = 0;
         x = x * rememberX;
         minusOne = minusOne * (-1);
         returnValue = returnValue + minusOne * x / k;
+        
     } 
  //   } else {
   //      x = (x - 1)/(x + 1);
   //      returnValue = s21_log(1 + x) - s21_log(1 - x);
  //   }
-    }
+    
  //   }
-    return returnValue + counterStepen * lnTEN - counterMinusStepen * lnTEN;
+ returnValue = returnValue + counterStepen * lnTEN - counterMinusStepen * lnTEN;
+    }
+    }
+    return returnValue;
 }
 
 long double s21_sqrt(double x) {
     long double startX;
     
-    startX = x/2;
+    startX = x/2.;
     long double oldX;
-    bool end = false;
+    if (startX < 0) {
+        startX = NAN;
+    } else if (!(startX != startX) && (startX - startX != startX - startX)) {
+        startX = INFINITY;
+    } else if (startX > 0) {
     for (int i = 1; i < 1000; i++){
         startX = 1./2 * (startX + x/startX);
     }
-    /*
-    if (startX < 0) {
+    } else if (startX != startX) {
         startX = NAN;
-    } else if (x < eps) {
+    }  else {
+        startX = 0;
+    }
+    
+
+    /*
+     else if (x < eps) {
         startX = 0;
     } else {
         startX = s21_pow(x, 1./2);
@@ -298,18 +362,40 @@ long double s21_sqrt(double x) {
     */
     return startX;
 }
-/*
-long double s21_tan(double x) {
-    long double B = 1;
-    long double sumB = 0;
-    for (int n = 1; n < 50; n++) {
-        for (int k = 1; k <= n; k++) {
-            sumB = sumB + fact(n+1)/(fact(k+1)*fact(n-k)) * B;
-        }
-        B = -1/(n+1)*sumB;
-        if (n % 2 == 0) {
 
-        }
+long double s21_tan(double x) {
+    if (fabs(x) > s21_PI / 2) {
+        x = fmod(x, 2 * s21_PI);
     }
+    long double B[50];
+    long double returnValue = 0.;
+    long double four = -4.;
+    double rememberFour = -4;
+    double rememberX = x;
+    long double factN = 1;
+    B[0] = 1.;
+    for (int n = 1; n < 50; n++) {
+        long double sumB = 0.;
+        long double factK = 1;
+        long double rememberFactN = factN;
+        factN = factN * (n + 1);
+        int countN = n;
+        for (int k = 1; k <= n; k++) {
+            factK = factK * (k + 1);
+            rememberFactN = rememberFactN / (countN );
+            countN--;
+            if (ceil(rememberFactN) == 1. || rememberFactN == INFINITY) {
+                rememberFactN = 1;
+            }
+            sumB = sumB + factN/(factK*rememberFactN) * B[n - k];
+        }
+        B[n] = -1./(n+1)*sumB;
+    }
+    long double rememberN = 1;
+    for (int n = 1; n < 25; n++) {
+        returnValue = returnValue + B[2*n]*four*(1 - fabsl(four))*x/fact(2*n);
+        four = four * rememberFour;
+        x = x * rememberX * rememberX;
+    }
+    return returnValue;
 }
-*/
