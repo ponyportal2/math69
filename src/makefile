@@ -18,10 +18,14 @@ all: s21_math.a
 style:
 	clang-format -n -style=Google *.c *.h
 
+style_force:
+	clang-format -style=Google -dump-config > .clang-format
+	clang-format -i *.c *.h
+
 s21_math.a: clean
 	gcc  $(SYSFLAG) $(CFLAGS) -c $(SOURCES)
-	ar rc libs21_math.a *.o
-	ranlib libs21_math.a
+	ar rc s21_math.a *.o
+	ranlib s21_math.a
 	rm -f *.o
 
 cppcheck:
@@ -36,12 +40,12 @@ gcov_report: clean
 	open report/index.html
 	
 test: s21_math.a
-	gcc $(SYSFLAG) $(CFLAGS) test.c -L. -ls21_math $(LFLAGS) -o test
+	gcc $(SYSFLAG) $(CFLAGS) test.c -L. s21_math.a $(LFLAGS) -o test
 	-./test > test.log
 	bash test_log.sh
 
 leaks: s21_math.a
-	gcc $(SYSFLAG) $(CFLAGS) test.c -L. -ls21_math $(LFLAGS) -o test
+	gcc $(SYSFLAG) $(CFLAGS) test.c -L. s21_math.a $(LFLAGS) -o test
 	$(LEAK) ./test > test.log
 	bash test_log.sh
 	bash test_leak.sh
@@ -49,5 +53,5 @@ leaks: s21_math.a
 rebuild: clean gcov_report
 
 clean:
-	rm -f test libs21_math.a *.gc* test.info log.xml test.log leak.log
+	rm -f test s21_math.a libs21_math.a *.gc* test.info log.xml test.log leak.log
 	rm -f -rf report
