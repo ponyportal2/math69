@@ -1,13 +1,11 @@
 #include "s21_math.h"
 
 #include <float.h>
-#include <math.h>
+#include <math.h>  // надо починить чтобы INFINITY и подобное работало без math.h
+// вроде нам нужно сделать s21_INIFINITY? уже не помню задание
 #include <stdbool.h>
 #include <stdio.h>
 #include <unistd.h>
-
-// сможет быть неправильно, нужно уточнить:
-#define MAC_LDOUBLE_MIN_ 0.0000000000000000000000000000000001L
 
 int s21_abs(int x) {  // возможно наивная имплементация
   int returnValue = x;
@@ -23,8 +21,6 @@ long double s21_ceil(double x) {
   long double leftPartLod = leftPartInt;  // Lod stands for long double
   long double rightPart = x - leftPartLod;
 
-  // тут нужно поставить минимальный по размеру long double, может зависеть от
-  // системы, тогда надо сделать вилку:
   if (x >= 0 && x != DBL_MAX && x != INFINITY) {
     if (rightPart >= DBL_MIN) {
       returnValue = (long double)leftPartInt + 1;
@@ -37,24 +33,24 @@ long double s21_ceil(double x) {
   return returnValue;
 }
 
+// может куча кастов в лонг дабл это тупо, проверь меняет это что-то или нет :)
 long double s21_floor(double x) {
-  long double returnValue = x;
-  long long leftPartInt = x;              // getting the floor value
-  long double leftPartLod = leftPartInt;  // Lod stands for long double
-  long double rightPart = x - leftPartLod;
+  long double returnValue = (long double)x;
+  long long leftPartInt = x;  // getting the floor value
+  long double leftPartLod =
+      (long double)leftPartInt;  // Lod stands for long double
+  long double rightPart = (long double)x - leftPartLod;
 
-  // тут нужно поставить минимальный по размеру long double, может зависеть от
-  // системы, тогда надо сделать вилку:
   if (x < 0 && x != -DBL_MAX && x != -INFINITY) {
     if (rightPart >= DBL_MIN || rightPart <= -DBL_MIN) {
       returnValue = (long double)leftPartInt - 1;
     } else {
-      returnValue = x;
+      returnValue = (long double)x;
     }
   } else if (x > 0 && x != DBL_MAX && x != INFINITY) {
-    returnValue = leftPartInt;
+    returnValue = (long double)leftPartInt;
   }
-  return returnValue;
+  return (long double)returnValue;
 }
 
 long double s21_fabs(double x) {  // возможно наивная имплементация
@@ -237,22 +233,22 @@ long double s21_pow(double base, double e) {
 }
 
 long double s21_sqrt(double x) {
-    long double startX;
-    
-    startX = x/2;
-    // long double oldX;
-    // bool end = false;
-    for (int i = 1; i < 1000; i++){
-        startX = 1./2 * (startX + x/startX);
-    }
-    /*
-    if (startX < 0) {
-        startX = NAN;
-    } else if (x < eps) {
-        startX = 0;
-    } else {
-        startX = s21_pow(x, 1./2);
-    }
-    */
-    return startX;
+  long double startX;
+
+  startX = x / 2;
+  // long double oldX;
+  // bool end = false;
+  for (int i = 1; i < 1000; i++) {
+    startX = 1. / 2 * (startX + x / startX);
+  }
+  /*
+  if (startX < 0) {
+      startX = NAN;
+  } else if (x < eps) {
+      startX = 0;
+  } else {
+      startX = s21_pow(x, 1./2);
+  }
+  */
+  return startX;
 }
