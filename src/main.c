@@ -38,8 +38,8 @@ int main() {
     }*/
   // printf("%.40Lf\n", s21_exp(80));
   // printf("%.40f\n", exp(80));
-    printf("%lf\n", pow(-INFINITY,44.1));
-    printf("%Lf\n", s21_pow(-INFINITY,44.1));
+    printf("%lf\n", pow(-INFINITY,41));
+    printf("%Lf\n", s21_pow(-INFINITY,41));
    // printf("%.30Lf\n", s21_exp(100));
    // printf("%.30Lf\n", s21_atan1(-6.9)); //вроде как хуже
  //   printf("%.30f\n", exp(100));
