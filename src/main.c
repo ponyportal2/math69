@@ -38,8 +38,8 @@ int main() {
     }*/
   // printf("%.40Lf\n", s21_exp(80));
   // printf("%.40f\n", exp(80));
-    printf("%lf\n", pow(-0.2, -DBL_MAX));
-    printf("%Lf\n", s21_pow(-0.2, -DBL_MAX));
+    printf("%lf\n", pow(-INFINITY,44.1));
+    printf("%Lf\n", s21_pow(-INFINITY,44.1));
    // printf("%.30Lf\n", s21_exp(100));
    // printf("%.30Lf\n", s21_atan1(-6.9)); //вроде как хуже
  //   printf("%.30f\n", exp(100));
@@ -229,7 +229,7 @@ long double s21_pow(double base, double exp) {
 long double s21_pow(double base, double e) {
     long double returnValue;
     int infinitySign = 1;
-    if (base == -INFINITY && fabs(e) == 1) {
+    if (base == -INFINITY && fmod(fabs(e), 2.) == 1) {
         infinitySign = -1;
     }
     if (base == 0. && e == 0.) {
