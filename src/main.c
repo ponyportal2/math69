@@ -23,6 +23,8 @@ long double s21_log(double x);
 long double s21_sqrt(double x);
 long double s21_tan(double x);
 
+int s21_isinf(double x);
+
 
 
 int main() {
@@ -38,8 +40,8 @@ int main() {
     }*/
   // printf("%.40Lf\n", s21_exp(80));
   // printf("%.40f\n", exp(80));
-    printf("%lf\n", pow(-INFINITY,41));
-    printf("%Lf\n", s21_pow(-INFINITY,41));
+    printf("%lf\n", pow(-INFINITY,11));
+    printf("%Lf\n", s21_pow(-INFINITY,11));
    // printf("%.30Lf\n", s21_exp(100));
    // printf("%.30Lf\n", s21_atan1(-6.9)); //вроде как хуже
  //   printf("%.30f\n", exp(100));
@@ -48,6 +50,14 @@ int main() {
  // printf("%f\n", atan(-2));
  // printf("%Lf\n", s21_atan(-2));
     return 0;
+}
+
+int s21_isinf(double x) {
+    int sign = 1;
+    if (x < 0) {
+        sign = -1;
+    }
+    return sign * (!(x != x) && x - x != x - x);
 }
 
 int s21_abs(int x) {
@@ -229,20 +239,20 @@ long double s21_pow(double base, double exp) {
 long double s21_pow(double base, double e) {
     long double returnValue;
     int infinitySign = 1;
-    if (base == -INFINITY && fmod(fabs(e), 2.) == 1) {
+    if (s21_isinf(base) == -1 && fmod(fabs(e), 2.) == 1) {
         infinitySign = -1;
     }
     if (base == 0. && e == 0.) {
         returnValue = 1.;
-    } else if ((fabs(base) == 1. && fabs(e) == INFINITY) || (base == 1. && e != e)) {
+    } else if ((fabs(base) == 1. && s21_isinf(fabs(e))) || (base == 1. && e != e)) {
         returnValue = 1.;
-    } else if ((fabs(base) > 1. && e == INFINITY) || (fabs(base) < 1. && e == -INFINITY)) {
+    } else if ((fabs(base) > 1. && s21_isinf(e) == 1) || (fabs(base) < 1. && s21_isinf(e) == -1)) {
         returnValue = INFINITY;
-    } else if ((fabs(base) < 1. && e == INFINITY) || (fabs(base) > 1. && e == -INFINITY)) {
+    } else if ((fabs(base) < 1. && s21_isinf(e) == 1) || (fabs(base) > 1. && s21_isinf(e) == -1)) {
         returnValue = 0.;
-    } else if (fabs(base) == INFINITY && e == 0.) {
+    } else if (s21_isinf(fabs(base)) == 1 && e == 0.) {
         returnValue = 1.;
-    } else if (fabs(base) == INFINITY && e < 0.) {
+    } else if (s21_isinf(fabs(base)) == 1 && e < 0.) {
         returnValue = 0.;
     } else if (fabs(base) > 1. && e == -DBL_MAX) {
         returnValue = 0.;
