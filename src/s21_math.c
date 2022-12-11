@@ -25,13 +25,13 @@ long double s21_ceil(double x) {
 
   // тут нужно поставить минимальный по размеру long double, может зависеть от
   // системы, тогда надо сделать вилку:
-  if (x >= 0 && x != DBL_MAX) {
+  if (x >= 0 && x != DBL_MAX && x != INFINITY) {
     if (rightPart >= DBL_MIN) {
       returnValue = (long double)leftPartInt + 1;
     } else {
       returnValue = x;
     }
-  } else if (x < 0 && x != -DBL_MAX) {
+  } else if (x < 0 && x != -DBL_MAX && x != -INFINITY) {
     returnValue = leftPartInt;
   }
   return returnValue;
@@ -45,13 +45,13 @@ long double s21_floor(double x) {
 
   // тут нужно поставить минимальный по размеру long double, может зависеть от
   // системы, тогда надо сделать вилку:
-  if (x < 0 && x != -DBL_MAX) {
+  if (x < 0 && x != -DBL_MAX && x != -INFINITY) {
     if (rightPart >= DBL_MIN || rightPart <= -DBL_MIN) {
       returnValue = (long double)leftPartInt - 1;
     } else {
       returnValue = x;
     }
-  } else if (x > 0 && x != DBL_MAX) {
+  } else if (x > 0 && x != DBL_MAX && x != INFINITY) {
     returnValue = leftPartInt;
   }
   return returnValue;
@@ -179,4 +179,80 @@ long double s21_atan(double x) {
     sign = -1;
   }
   return sign * acos(1 / sqrt(1 + x * x));
+}
+
+long double s21_log(double x) {
+  long double returnValue = eps;
+  long double rememberX;
+  long double counterStepen = 0;
+  long double counterMinusStepen = 0;
+  //  if (x - 2. < eps && x - 2. > -eps) {
+  //     returnValue = 0.693147180559945286226763982995;
+  // } else {
+  if (x < 0) {
+    returnValue = S21_NAN;
+  } else if (x == 0) {  // вот тут получается надо именно 0
+    returnValue = -INFINITY;
+  }
+  if (returnValue == eps) {
+    while ((int)x < 0.1) {
+      counterMinusStepen++;
+      x = x * 10;
+    }
+    while ((int)x > eps) {
+      counterStepen++;
+      x = x / 10;
+    }
+    x = x - 1;
+    rememberX = x;
+    returnValue = x;
+    int minusOne = 1;
+    //  if (x - 1 < eps) {
+    for (int k = 2; k <= 1000;
+         k++) {  // чем большее число в логарифм? тем больше шагов надо тут
+      x = x * rememberX;
+      minusOne = minusOne * (-1);
+      returnValue = returnValue + minusOne * x / k;
+    }
+    //   } else {
+    //      x = (x - 1)/(x + 1);
+    //      returnValue = s21_log(1 + x) - s21_log(1 - x);
+    //   }
+  }
+  //   }
+  return returnValue + counterStepen * lnTEN - counterMinusStepen * lnTEN;
+}
+
+long double s21_fmod(double x, double y) {
+  double divisor = x / y;
+  int round_divisor = (int)s21_fabs(divisor);
+
+  long double res = divisor < 0 ? x + y * round_divisor : x - y * round_divisor;
+
+  return res;
+}
+
+long double s21_pow(double base, double e) {
+  return s21_exp(s21_log(base) * e);
+}
+
+long double s21_sqrt(double x) {
+    long double startX;
+    
+    startX = x/2;
+    // long double oldX;
+    // bool end = false;
+    for (int i = 1; i < 1000; i++){
+        startX = 1./2 * (startX + x/startX);
+    }
+    /*
+    if (startX < 0) {
+        startX = NAN;
+    } else if (x < eps) {
+        startX = 0;
+    } else {
+        startX = s21_pow(x, 1./2);
+    }
+    */
+    return startX;
 }

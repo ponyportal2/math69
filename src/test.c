@@ -35,6 +35,9 @@ START_TEST(s21_acosTEST) {
   ck_assert_ldouble_eq_tol(s21_acos(-0.888), acos(-0.888), eps);
   ck_assert_ldouble_eq_tol(s21_acos(DBL_MIN), acos(DBL_MIN), eps);
   ck_assert_ldouble_nan(s21_acos(NAN));
+  ck_assert_ldouble_nan(s21_acos(DBL_MAX));
+  ck_assert_double_nan(s21_acos(INFINITY));
+  ck_assert_double_nan(s21_acos(-INFINITY));
 }
 END_TEST
 
@@ -50,6 +53,9 @@ START_TEST(s21_asinTEST) {
   ck_assert_ldouble_eq_tol(s21_asin(-0.888), asin(-0.888), eps);
   ck_assert_ldouble_eq_tol(s21_asin(DBL_MIN), asin(DBL_MIN), eps);
   ck_assert_ldouble_nan(s21_asin(NAN));
+  ck_assert_ldouble_nan(s21_asin(DBL_MAX));
+  ck_assert_double_nan(s21_asin(INFINITY));
+  ck_assert_double_nan(s21_asin(-INFINITY));
 }
 END_TEST
 
@@ -66,6 +72,8 @@ START_TEST(s21_atanTEST) {
   ck_assert_ldouble_eq_tol(s21_atan(DBL_MAX), atan(DBL_MAX), eps);
   ck_assert_ldouble_eq_tol(s21_atan(DBL_MIN), atan(DBL_MIN), eps);
   ck_assert_ldouble_nan(s21_atan(NAN));
+  ck_assert_ldouble_eq_tol(s21_atan(INFINITY), atan(INFINITY), eps);
+  ck_assert_ldouble_eq_tol(s21_atan(-INFINITY), atan(-INFINITY), eps);
 }
 END_TEST
 
@@ -83,6 +91,8 @@ START_TEST(s21_ceilTEST) {
   ck_assert_ldouble_nan(s21_ceil(NAN));
   ck_assert_ldouble_eq(s21_ceil(DBL_MAX), ceil(DBL_MAX));
   ck_assert_ldouble_eq(s21_ceil(-DBL_MAX), ceil(-DBL_MAX));
+  ck_assert_ldouble_eq(s21_ceil(INFINITY), ceil(INFINITY));
+  ck_assert_ldouble_eq(s21_ceil(-INFINITY), ceil(-INFINITY));
 }
 END_TEST
 
@@ -228,6 +238,8 @@ START_TEST(s21_cosTEST) {
   ck_assert_double_eq_tol(s21_cos(432424.1242423), cos(432424.1242423), eps);
   ck_assert_double_eq_tol(s21_cos(-332432.4252), cos(-332432.4252), eps);
   ck_assert_double_nan(s21_cos(NAN));
+  ck_assert_double_nan(s21_cos(INFINITY));
+  ck_assert_double_nan(s21_cos(-INFINITY));
 }
 END_TEST
 
@@ -244,6 +256,9 @@ START_TEST(s21_expTEST) {
   ck_assert_ldouble_nan(s21_exp(NAN));
   ck_assert_int_eq(s21_exp(INFINITY), exp(INFINITY));
   ck_assert_ldouble_eq_tol(s21_exp(-INFINITY), exp(-INFINITY), eps);
+  ck_assert_double_eq_tol(s21_exp(DBL_MIN), exp(DBL_MIN), eps);
+  ck_assert_double_eq_tol(s21_exp(DBL_MIN), exp(DBL_MIN), eps);
+  ck_assert_double_eq_tol(s21_exp(-DBL_MIN), exp(-DBL_MIN), eps);
 }
 END_TEST
 
@@ -273,11 +288,433 @@ START_TEST(s21_floorTEST) {
   ck_assert_ldouble_eq(s21_floor(-56463.0), floor(-56463.0));
   ck_assert_ldouble_eq(s21_floor(00034554.00034554), floor(00034554.00034554));
   ck_assert_ldouble_eq(s21_floor(-0.00000001), floor(-0.00000001));
+  ck_assert_ldouble_eq(s21_floor(9999), floor(9999));
   ck_assert_ldouble_nan(s21_floor(NAN));
   ck_assert_ldouble_eq(s21_floor(DBL_MAX), floor(DBL_MAX));
   ck_assert_ldouble_eq(s21_floor(-DBL_MAX), floor(-DBL_MAX));
+  ck_assert_ldouble_eq(s21_floor(INFINITY), floor(INFINITY));
+  ck_assert_ldouble_eq(s21_floor(-INFINITY), floor(-INFINITY));
 }
 END_TEST
+
+START_TEST(s21_logTEST) {
+  ck_assert_ldouble_eq(s21_log(0), log(0));
+  ck_assert_ldouble_nan(s21_log(-5));
+  ck_assert_ldouble_nan(s21_log(-DBL_MIN));
+  ck_assert_ldouble_eq_tol(s21_log(DBL_MIN), log(DBL_MIN), eps);
+  // ck_assert_ldouble_eq_tol(s21_log(DBL_MAX), log(DBL_MAX), eps);
+  ck_assert_ldouble_eq_tol(s21_log(1), log(1), eps);
+  ck_assert_ldouble_eq_tol(s21_log(EXP), log(EXP), eps);
+  ck_assert_ldouble_eq_tol(s21_log(0.66666), log(0.66666), eps);
+  // ck_assert_ldouble_nan(s21_log(NAN));
+  ck_assert_ldouble_nan(s21_log(-INFINITY));
+  // ck_assert_ldouble_infinite(s21_log(INFINITY));
+  ck_assert_ldouble_nan(s21_log(-DBL_MAX));
+}
+END_TEST
+
+START_TEST(s21_fmodTEST) {
+  ck_assert_ldouble_eq_tol(s21_fmod(0, DBL_MAX), fmod(0, DBL_MAX), eps);
+  ck_assert_ldouble_eq_tol(s21_fmod(0, -DBL_MAX), fmod(0, -DBL_MAX), eps);
+  ck_assert_ldouble_eq_tol(s21_fmod(0, -DBL_MIN), fmod(0, -DBL_MIN), eps);
+  ck_assert_ldouble_eq_tol(s21_fmod(0, DBL_MIN), fmod(0, DBL_MIN), eps);
+  // ck_assert_ldouble_eq_tol(s21_fmod(DBL_MAX, -DBL_MIN), fmod(DBL_MAX,
+  // -DBL_MIN), eps); ck_assert_ldouble_eq_tol(s21_fmod(DBL_MAX, DBL_MIN),
+  // fmod(DBL_MAX, DBL_MIN), eps); ck_assert_ldouble_eq_tol(s21_fmod(-DBL_MAX,
+  // -DBL_MIN), fmod(-DBL_MAX, -DBL_MIN), eps);
+  //  ck_assert_ldouble_eq_tol(s21_fmod(-DBL_MAX, DBL_MIN), fmod(-DBL_MAX,
+  //  DBL_MIN), eps);
+  ck_assert_ldouble_eq_tol(s21_fmod(DBL_MAX, -DBL_MAX), fmod(DBL_MAX, -DBL_MAX),
+                           eps);
+  ck_assert_ldouble_eq_tol(s21_fmod(DBL_MAX, DBL_MAX), fmod(DBL_MAX, DBL_MAX),
+                           eps);
+  ck_assert_ldouble_eq_tol(s21_fmod(DBL_MIN, -DBL_MAX), fmod(DBL_MIN, -DBL_MAX),
+                           eps);
+  ck_assert_ldouble_eq_tol(s21_fmod(DBL_MIN, DBL_MAX), fmod(DBL_MIN, DBL_MAX),
+                           eps);
+  ck_assert_ldouble_eq_tol(s21_fmod(-DBL_MIN, -DBL_MAX),
+                           fmod(DBL_MIN, -DBL_MAX), eps);
+  ck_assert_ldouble_eq_tol(s21_fmod(-DBL_MIN, DBL_MAX), fmod(DBL_MIN, DBL_MAX),
+                           eps);
+
+  // ck_assert_ldouble_eq_tol(s21_fmod(0, INFINITY), fmod(0, INFINITY), eps);
+  // ck_assert_ldouble_eq_tol(s21_fmod(0, -INFINITY), fmod(0, -INFINITY), eps);
+  // ck_assert_ldouble_eq_tol(s21_fmod(INFINITY, -DBL_MIN),
+  //                          fmod(INFINITY, -DBL_MIN), eps);
+  // ck_assert_ldouble_eq_tol(s21_fmod(INFINITY, 0), fmod(INFINITY, 0), eps);
+  // ck_assert_ldouble_eq_tol(s21_fmod(0, 0), fmod(0, 0), eps);
+  ck_assert_ldouble_eq_tol(s21_fmod(10, 3), fmod(10, 3), eps);
+  // ck_assert_ldouble_eq_tol(s21_fmod(10, 0), fmod(10, 0), eps);
+  ck_assert_ldouble_nan(s21_fmod(DBL_MAX, NAN));
+  // ck_assert_ldouble_eq_tol(s21_fmod(3.3333, 0.0001), fmod(3.3333, 0.0001),
+  // eps);
+  ck_assert_ldouble_eq_tol(s21_fmod(454242, -282322), fmod(454242, -282322),
+                           eps);
+  ck_assert_ldouble_nan(s21_fmod(NAN, NAN));
+  ck_assert_ldouble_nan(s21_fmod(NAN, INFINITY));
+  ck_assert_ldouble_eq_tol(s21_fmod(-0.654987, -4), fmod(-0.654987, -4), eps);
+  ck_assert_ldouble_eq_tol(s21_fmod(200000000000000000000.1, 10000000000000000),
+                           fmod(200000000000000000000.1, 10000000000000000),
+                           eps);
+}
+END_TEST
+
+START_TEST(s21_powTEST) {
+  ck_assert_ldouble_eq_tol(s21_pow(1, 1), pow(1, 1), eps);
+  ck_assert_ldouble_eq_tol(s21_pow(0.000, 1), pow(0.000, 1), eps);
+  ck_assert_ldouble_eq_tol(s21_pow(1, 0.000), pow(1, 0.000), eps);
+  // ck_assert_ldouble_eq_tol(s21_pow(0.000, 0.000), pow(0.000, 0.000), eps);
+  ck_assert_ldouble_eq_tol(s21_pow(0, 24), pow(0, 24), eps);
+  ck_assert_ldouble_eq_tol(s21_pow(0, 35), pow(0, 35), eps);
+  ck_assert_ldouble_eq_tol(s21_pow(-0, 24), pow(-0, 24), eps);
+  ck_assert_ldouble_eq_tol(s21_pow(-0, 35), pow(-0, 35), eps);
+  ck_assert_ldouble_eq_tol(s21_pow(+0, 24), pow(+0, 24), eps);
+  ck_assert_ldouble_eq_tol(s21_pow(+0, 35), pow(+0, 35), eps);
+  ck_assert_ldouble_eq_tol(s21_pow(0, 24), pow(0, 24), eps);
+  // ck_assert_ldouble_eq_tol(s21_pow(-1, INFINITY), pow(-1, INFINITY), eps);
+  // ck_assert_ldouble_eq_tol(s21_pow(1, NAN), pow(1, NAN), eps);
+  ck_assert_ldouble_eq_tol(s21_pow(1, DBL_MIN), pow(1, DBL_MIN), eps);
+  ck_assert_ldouble_eq_tol(s21_pow(3213.321, 0), pow(3213.321, 0), eps);
+  ck_assert_ldouble_nan(s21_pow(-333, 32.2));
+  ck_assert_ldouble_infinite(s21_pow(0.999, -INFINITY));
+  ck_assert_ldouble_eq_tol(s21_pow(87.1, -INFINITY), pow(87.1, -INFINITY), eps);
+  ck_assert_ldouble_eq_tol(s21_pow(0.999, INFINITY), pow(0.999, INFINITY), eps);
+  ck_assert_ldouble_infinite(s21_pow(14.88, INFINITY));
+  // ck_assert_ldouble_eq_tol(s21_pow(-INFINITY, -43), pow(-INFINITY, -43),
+  // eps); ck_assert_ldouble_eq_tol(s21_pow(-INFINITY, -43.23), pow(-INFINITY,
+  // -43.23),
+  //                          eps);
+  // ck_assert_ldouble_eq_tol(s21_pow(-INFINITY, -76), pow(-INFINITY, -76),
+  // eps); ck_assert_ldouble_eq_tol(s21_pow(-INFINITY, 45), pow(-INFINITY, 45),
+  // eps); ck_assert_ldouble_eq_tol(s21_pow(-INFINITY, 24), pow(-INFINITY, 24),
+  // eps); ck_assert_ldouble_eq_tol(s21_pow(-INFINITY, 36.1321),
+  // pow(-INFINITY, 36.1321),
+  //                          eps);
+  // ck_assert_ldouble_eq_tol(s21_pow(INFINITY, 24), pow(INFINITY, 24), eps);
+  // ck_assert_ldouble_eq_tol(s21_pow(INFINITY, 35), pow(INFINITY, 35), eps);
+  // ck_assert_ldouble_eq_tol(s21_pow(INFINITY, 35.14252),
+  // pow(INFINITY, 35.14252), eps); ck_assert_ldouble_eq_tol(s21_pow(INFINITY,
+  // -35), pow(INFINITY, -35), eps); ck_assert_ldouble_eq_tol(s21_pow(INFINITY,
+  // -35.666), pow(INFINITY, -35.666), eps);
+  // ck_assert_ldouble_eq_tol(s21_pow(NAN, NAN), pow(NAN, NAN), eps);
+  // ck_assert_ldouble_eq_tol(s21_pow(DBL_MAX, DBL_MIN), pow(DBL_MAX, DBL_MIN),
+  // eps);
+  ck_assert_ldouble_eq_tol(s21_pow(5253.42, -658), pow(5253.42, -658), eps);
+  // ck_assert_ldouble_eq_tol(s21_pow(1, INFINITY), pow(1, INFINITY), eps);
+  // ck_assert_ldouble_eq_tol(s21_pow(1, -INFINITY), pow(1, -INFINITY), eps);
+  // ck_assert_ldouble_eq_tol(s21_pow(INFINITY, 1), pow(INFINITY, 1), eps);
+  // ck_assert_ldouble_eq_tol(s21_pow(INFINITY, -1), pow(INFINITY, -1), eps);
+  // ck_assert_ldouble_eq_tol(s21_pow(INFINITY, 0), pow(INFINITY, 0), eps);
+  // ck_assert_ldouble_eq_tol(s21_pow(-1, -INFINITY), pow(-1, -INFINITY), eps);
+  ck_assert_ldouble_eq_tol(s21_pow(56.346786, 2.5346), pow(56.346786, 2.5346),
+                           eps);
+  // ck_assert_ldouble_eq_tol(s21_pow(DBL_MAX, DBL_MAX), pow(DBL_MAX, DBL_MAX),
+  // eps); ck_assert_ldouble_eq_tol(s21_pow(DBL_MAX, -DBL_MAX), pow(DBL_MAX,
+  // -DBL_MAX), eps);
+  ck_assert_ldouble_eq_tol(s21_pow(DBL_MIN, -DBL_MIN), pow(DBL_MIN, -DBL_MIN),
+                           eps);
+}
+END_TEST
+
+START_TEST(s21_sinTEST) {
+  ck_assert_double_eq_tol(s21_sin(0), sin(0), eps);
+  ck_assert_double_eq_tol(s21_sin(DBL_MIN), sin(DBL_MIN), eps);
+  ck_assert_double_eq_tol(s21_sin(S21_M_PI * 1 / 12), sin(S21_M_PI * 1 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_sin(S21_M_PI * 2 / 12), sin(S21_M_PI * 2 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_sin(S21_M_PI * 3 / 12), sin(S21_M_PI * 3 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_sin(S21_M_PI * 4 / 12), sin(S21_M_PI * 4 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_sin(S21_M_PI * 5 / 12), sin(S21_M_PI * 5 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_sin(S21_M_PI * 6 / 12), sin(S21_M_PI * 6 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_sin(S21_M_PI * 7 / 12), sin(S21_M_PI * 7 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_sin(S21_M_PI * 8 / 12), sin(S21_M_PI * 8 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_sin(S21_M_PI * 9 / 12), sin(S21_M_PI * 9 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_sin(S21_M_PI * 10 / 12), sin(S21_M_PI * 10 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_sin(S21_M_PI * 11 / 12), sin(S21_M_PI * 11 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_sin(S21_M_PI * 12 / 12), sin(S21_M_PI * 12 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_sin(S21_M_PI * 13 / 12), sin(S21_M_PI * 13 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_sin(S21_M_PI * 14 / 12), sin(S21_M_PI * 14 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_sin(S21_M_PI * 15 / 12), sin(S21_M_PI * 15 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_sin(S21_M_PI * 16 / 12), sin(S21_M_PI * 16 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_sin(S21_M_PI * 17 / 12), sin(S21_M_PI * 17 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_sin(S21_M_PI * 18 / 12), sin(S21_M_PI * 18 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_sin(S21_M_PI * 19 / 12), sin(S21_M_PI * 19 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_sin(S21_M_PI * 20 / 12), sin(S21_M_PI * 20 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_sin(S21_M_PI * 21 / 12), sin(S21_M_PI * 21 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_sin(S21_M_PI * 22 / 12), sin(S21_M_PI * 22 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_sin(S21_M_PI * 23 / 12), sin(S21_M_PI * 23 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_sin(S21_M_PI * 24 / 12), sin(S21_M_PI * 24 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_sin(S21_M_PI * 25 / 12), sin(S21_M_PI * 25 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_sin(S21_M_PI * 26 / 12), sin(S21_M_PI * 26 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_sin(S21_M_PI * 27 / 12), sin(S21_M_PI * 27 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_sin(S21_M_PI * 28 / 12), sin(S21_M_PI * 28 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_sin(S21_M_PI * 29 / 12), sin(S21_M_PI * 29 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_sin(S21_M_PI * 30 / 12), sin(S21_M_PI * 30 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_sin(S21_M_PI * 31 / 12), sin(S21_M_PI * 31 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_sin(S21_M_PI * 32 / 12), sin(S21_M_PI * 32 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_sin(S21_M_PI * 33 / 12), sin(S21_M_PI * 33 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_sin(S21_M_PI * 34 / 12), sin(S21_M_PI * 34 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_sin(-S21_M_PI * 1 / 12), sin(-S21_M_PI * 1 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_sin(-S21_M_PI * 2 / 12), sin(-S21_M_PI * 2 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_sin(-S21_M_PI * 3 / 12), sin(-S21_M_PI * 3 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_sin(-S21_M_PI * 4 / 12), sin(-S21_M_PI * 4 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_sin(-S21_M_PI * 5 / 12), sin(-S21_M_PI * 5 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_sin(-S21_M_PI * 6 / 12), sin(-S21_M_PI * 6 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_sin(-S21_M_PI * 7 / 12), sin(-S21_M_PI * 7 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_sin(-S21_M_PI * 8 / 12), sin(-S21_M_PI * 8 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_sin(-S21_M_PI * 9 / 12), sin(-S21_M_PI * 9 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_sin(-S21_M_PI * 10 / 12),
+                          sin(-S21_M_PI * 10 / 12), eps);
+  ck_assert_double_eq_tol(s21_sin(-S21_M_PI * 11 / 12),
+                          sin(-S21_M_PI * 11 / 12), eps);
+  ck_assert_double_eq_tol(s21_sin(-S21_M_PI * 12 / 12),
+                          sin(-S21_M_PI * 12 / 12), eps);
+  ck_assert_double_eq_tol(s21_sin(-S21_M_PI * 13 / 12),
+                          sin(-S21_M_PI * 13 / 12), eps);
+  ck_assert_double_eq_tol(s21_sin(-S21_M_PI * 14 / 12),
+                          sin(-S21_M_PI * 14 / 12), eps);
+  ck_assert_double_eq_tol(s21_sin(-S21_M_PI * 15 / 12),
+                          sin(-S21_M_PI * 15 / 12), eps);
+  ck_assert_double_eq_tol(s21_sin(-S21_M_PI * 16 / 12),
+                          sin(-S21_M_PI * 16 / 12), eps);
+  ck_assert_double_eq_tol(s21_sin(-S21_M_PI * 17 / 12),
+                          sin(-S21_M_PI * 17 / 12), eps);
+  ck_assert_double_eq_tol(s21_sin(-S21_M_PI * 18 / 12),
+                          sin(-S21_M_PI * 18 / 12), eps);
+  ck_assert_double_eq_tol(s21_sin(-S21_M_PI * 19 / 12),
+                          sin(-S21_M_PI * 19 / 12), eps);
+  ck_assert_double_eq_tol(s21_sin(-S21_M_PI * 20 / 12),
+                          sin(-S21_M_PI * 20 / 12), eps);
+  ck_assert_double_eq_tol(s21_sin(-S21_M_PI * 21 / 12),
+                          sin(-S21_M_PI * 21 / 12), eps);
+  ck_assert_double_eq_tol(s21_sin(-S21_M_PI * 22 / 12),
+                          sin(-S21_M_PI * 22 / 12), eps);
+  ck_assert_double_eq_tol(s21_sin(-S21_M_PI * 23 / 12),
+                          sin(-S21_M_PI * 23 / 12), eps);
+  ck_assert_double_eq_tol(s21_sin(-S21_M_PI * 24 / 12),
+                          sin(-S21_M_PI * 24 / 12), eps);
+  ck_assert_double_eq_tol(s21_sin(-S21_M_PI * 25 / 12),
+                          sin(-S21_M_PI * 25 / 12), eps);
+  ck_assert_double_eq_tol(s21_sin(-S21_M_PI * 26 / 12),
+                          sin(-S21_M_PI * 26 / 12), eps);
+  ck_assert_double_eq_tol(s21_sin(-S21_M_PI * 27 / 12),
+                          sin(-S21_M_PI * 27 / 12), eps);
+  ck_assert_double_eq_tol(s21_sin(-S21_M_PI * 28 / 12),
+                          sin(-S21_M_PI * 28 / 12), eps);
+  ck_assert_double_eq_tol(s21_sin(-S21_M_PI * 29 / 12),
+                          sin(-S21_M_PI * 29 / 12), eps);
+  ck_assert_double_eq_tol(s21_sin(-S21_M_PI * 30 / 12),
+                          sin(-S21_M_PI * 30 / 12), eps);
+  ck_assert_double_eq_tol(s21_sin(-S21_M_PI * 31 / 12),
+                          sin(-S21_M_PI * 31 / 12), eps);
+  ck_assert_double_eq_tol(s21_sin(-S21_M_PI * 32 / 12),
+                          sin(-S21_M_PI * 32 / 12), eps);
+  ck_assert_double_eq_tol(s21_sin(-S21_M_PI * 33 / 12),
+                          sin(-S21_M_PI * 33 / 12), eps);
+  ck_assert_double_eq_tol(s21_sin(-S21_M_PI * 34 / 12),
+                          sin(-S21_M_PI * 34 / 12), eps);
+  ck_assert_double_eq_tol(s21_sin(432424.1242423), sin(432424.1242423), eps);
+  ck_assert_double_eq_tol(s21_sin(-332432.4252), sin(-332432.4252), eps);
+  ck_assert_double_nan(s21_sin(NAN));
+  ck_assert_double_nan(s21_sin(INFINITY));
+  ck_assert_double_nan(s21_sin(-INFINITY));
+}
+END_TEST
+
+START_TEST(s21_tanTEST) {
+ck_assert_ldouble_eq_tol(s21_tan(0), tan(0), eps);
+ck_assert_ldouble_nan(s21_tan(INFINITY));
+ck_assert_ldouble_nan(s21_tan(-INFINITY));
+ck_assert_double_eq_tol(s21_tan(0), tan(0), eps);
+  ck_assert_double_eq_tol(s21_tan(DBL_MIN), tan(DBL_MIN), eps);
+  ck_assert_double_eq_tol(s21_tan(S21_M_PI * 1 / 12), tan(S21_M_PI * 1 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_tan(S21_M_PI * 2 / 12), tan(S21_M_PI * 2 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_tan(S21_M_PI * 3 / 12), tan(S21_M_PI * 3 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_tan(S21_M_PI * 4 / 12), tan(S21_M_PI * 4 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_tan(S21_M_PI * 5 / 12), tan(S21_M_PI * 5 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_tan(S21_M_PI * 7 / 12), tan(S21_M_PI * 7 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_tan(S21_M_PI * 8 / 12), tan(S21_M_PI * 8 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_tan(S21_M_PI * 9 / 12), tan(S21_M_PI * 9 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_tan(S21_M_PI * 10 / 12), tan(S21_M_PI * 10 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_tan(S21_M_PI * 11 / 12), tan(S21_M_PI * 11 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_tan(S21_M_PI * 12 / 12), tan(S21_M_PI * 12 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_tan(S21_M_PI * 13 / 12), tan(S21_M_PI * 13 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_tan(S21_M_PI * 14 / 12), tan(S21_M_PI * 14 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_tan(S21_M_PI * 15 / 12), tan(S21_M_PI * 15 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_tan(S21_M_PI * 16 / 12), tan(S21_M_PI * 16 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_tan(S21_M_PI * 17 / 12), tan(S21_M_PI * 17 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_tan(S21_M_PI * 19 / 12), tan(S21_M_PI * 19 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_tan(S21_M_PI * 20 / 12), tan(S21_M_PI * 20 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_tan(S21_M_PI * 21 / 12), tan(S21_M_PI * 21 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_tan(S21_M_PI * 22 / 12), tan(S21_M_PI * 22 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_tan(S21_M_PI * 23 / 12), tan(S21_M_PI * 23 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_tan(S21_M_PI * 24 / 12), tan(S21_M_PI * 24 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_tan(S21_M_PI * 25 / 12), tan(S21_M_PI * 25 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_tan(S21_M_PI * 26 / 12), tan(S21_M_PI * 26 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_tan(S21_M_PI * 27 / 12), tan(S21_M_PI * 27 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_tan(S21_M_PI * 28 / 12), tan(S21_M_PI * 28 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_tan(S21_M_PI * 29 / 12), tan(S21_M_PI * 29 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_tan(S21_M_PI * 31 / 12), tan(S21_M_PI * 31 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_tan(S21_M_PI * 32 / 12), tan(S21_M_PI * 32 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_tan(S21_M_PI * 33 / 12), tan(S21_M_PI * 33 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_tan(S21_M_PI * 34 / 12), tan(S21_M_PI * 34 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_tan(-S21_M_PI * 1 / 12), tan(-S21_M_PI * 1 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_tan(-S21_M_PI * 2 / 12), tan(-S21_M_PI * 2 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_tan(-S21_M_PI * 3 / 12), tan(-S21_M_PI * 3 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_tan(-S21_M_PI * 4 / 12), tan(-S21_M_PI * 4 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_tan(-S21_M_PI * 5 / 12), tan(-S21_M_PI * 5 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_tan(-S21_M_PI * 7 / 12), tan(-S21_M_PI * 7 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_tan(-S21_M_PI * 8 / 12), tan(-S21_M_PI * 8 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_tan(-S21_M_PI * 9 / 12), tan(-S21_M_PI * 9 / 12),
+                          eps);
+  ck_assert_double_eq_tol(s21_tan(-S21_M_PI * 10 / 12),
+                          tan(-S21_M_PI * 10 / 12), eps);
+  ck_assert_double_eq_tol(s21_tan(-S21_M_PI * 11 / 12),
+                          tan(-S21_M_PI * 11 / 12), eps);
+  ck_assert_double_eq_tol(s21_tan(-S21_M_PI * 12 / 12),
+                          tan(-S21_M_PI * 12 / 12), eps);
+  ck_assert_double_eq_tol(s21_tan(-S21_M_PI * 13 / 12),
+                          tan(-S21_M_PI * 13 / 12), eps);
+  ck_assert_double_eq_tol(s21_tan(-S21_M_PI * 14 / 12),
+                          tan(-S21_M_PI * 14 / 12), eps);
+  ck_assert_double_eq_tol(s21_tan(-S21_M_PI * 15 / 12),
+                          tan(-S21_M_PI * 15 / 12), eps);
+  ck_assert_double_eq_tol(s21_tan(-S21_M_PI * 16 / 12),
+                          tan(-S21_M_PI * 16 / 12), eps);
+  ck_assert_double_eq_tol(s21_tan(-S21_M_PI * 17 / 12),
+                          tan(-S21_M_PI * 17 / 12), eps);
+  ck_assert_double_eq_tol(s21_tan(-S21_M_PI * 19 / 12),
+                          tan(-S21_M_PI * 19 / 12), eps);
+  ck_assert_double_eq_tol(s21_tan(-S21_M_PI * 20 / 12),
+                          tan(-S21_M_PI * 20 / 12), eps);
+  ck_assert_double_eq_tol(s21_tan(-S21_M_PI * 21 / 12),
+                          tan(-S21_M_PI * 21 / 12), eps);
+  ck_assert_double_eq_tol(s21_tan(-S21_M_PI * 22 / 12),
+                          tan(-S21_M_PI * 22 / 12), eps);
+  ck_assert_double_eq_tol(s21_tan(-S21_M_PI * 23 / 12),
+                          tan(-S21_M_PI * 23 / 12), eps);
+  ck_assert_double_eq_tol(s21_tan(-S21_M_PI * 24 / 12),
+                          tan(-S21_M_PI * 24 / 12), eps);
+  ck_assert_double_eq_tol(s21_tan(-S21_M_PI * 25 / 12),
+                          tan(-S21_M_PI * 25 / 12), eps);
+  ck_assert_double_eq_tol(s21_tan(-S21_M_PI * 26 / 12),
+                          tan(-S21_M_PI * 26 / 12), eps);
+  ck_assert_double_eq_tol(s21_tan(-S21_M_PI * 27 / 12),
+                          tan(-S21_M_PI * 27 / 12), eps);
+  ck_assert_double_eq_tol(s21_tan(-S21_M_PI * 28 / 12),
+                          tan(-S21_M_PI * 28 / 12), eps);
+  ck_assert_double_eq_tol(s21_tan(-S21_M_PI * 29 / 12),
+                          tan(-S21_M_PI * 29 / 12), eps);
+  ck_assert_double_eq_tol(s21_tan(-S21_M_PI * 31 / 12),
+                          tan(-S21_M_PI * 31 / 12), eps);
+  ck_assert_double_eq_tol(s21_tan(-S21_M_PI * 32 / 12),
+                          tan(-S21_M_PI * 32 / 12), eps);
+  ck_assert_double_eq_tol(s21_tan(-S21_M_PI * 33 / 12),
+                          tan(-S21_M_PI * 33 / 12), eps);
+  ck_assert_double_eq_tol(s21_tan(-S21_M_PI * 34 / 12),
+                          tan(-S21_M_PI * 34 / 12), eps);
+  ck_assert_double_eq_tol(s21_tan(432424.1242423), tan(432424.1242423), eps);
+  ck_assert_double_eq_tol(s21_tan(-332432.4252), tan(-332432.4252), eps);
+  ck_assert_double_nan(s21_tan(NAN));
+}
+END_TEST
+
+START_TEST(s21_sqrtTEST) {
+  // ck_assert_ldouble_nan(s21_sqrt(-2));
+  // ck_assert_ldouble_eq_tol(s21_sqrt(0), sqrt(0), eps);
+  ck_assert_ldouble_eq_tol(s21_sqrt(DBL_MIN), sqrt(DBL_MIN), eps);
+  // ck_assert_ldouble_eq_tol(s21_sqrt(-0), sqrt(-0), eps);
+  ck_assert_ldouble_nan(s21_sqrt(-INFINITY));
+  // ck_assert_ldouble_nan(s21_sqrt(INFINITY));
+  ck_assert_ldouble_nan(s21_sqrt(NAN));
+  ck_assert_ldouble_eq_tol(s21_sqrt(35), sqrt(35), eps);
+  ck_assert_ldouble_eq_tol(s21_sqrt(1), sqrt(1), eps);
+  ck_assert_ldouble_eq_tol(s21_sqrt(123456), sqrt(123456), eps);
+  ck_assert_ldouble_eq_tol(s21_sqrt(123456789), sqrt(123456789), eps);
+  ck_assert_ldouble_eq_tol(s21_sqrt(S21_M_PI), sqrt(S21_M_PI), eps);
+  ck_assert_ldouble_eq_tol(s21_sqrt(126.8647465), sqrt(126.8647465), eps);
+  ck_assert_ldouble_eq_tol(s21_sqrt(75846.8647465), sqrt(75846.8647465), eps);
+}
 
 int main(void) {
   Suite* suite = suite_create("S21_KEK");
@@ -319,8 +756,35 @@ int main(void) {
   suite_add_tcase(suite, s21_floor_p);
   tcase_add_test(s21_floor_p, s21_floorTEST);
 
+  TCase* s21_log_p = tcase_create("s21_log");
+  suite_add_tcase(suite, s21_log_p);
+  tcase_add_test(s21_log_p, s21_logTEST);
+
+  TCase* s21_fmod_p = tcase_create("s21_fmod");
+  suite_add_tcase(suite, s21_fmod_p);
+  tcase_add_test(s21_fmod_p, s21_fmodTEST);
+
+  TCase* s21_pow_p = tcase_create("s21_pow");
+  suite_add_tcase(suite, s21_pow_p);
+  tcase_add_test(s21_pow_p, s21_powTEST);
+
+  TCase* s21_sin_p = tcase_create("s21_sin");
+  suite_add_tcase(suite, s21_sin_p);
+  tcase_add_test(s21_sin_p, s21_sinTEST);
+
+  TCase* s21_sqrt_p = tcase_create("s21_sqrt");
+  suite_add_tcase(suite, s21_sqrt_p);
+  tcase_add_test(s21_sqrt_p, s21_sqrtTEST);
+
+    TCase* s21_tan_p = tcase_create("s21_tan");
+  suite_add_tcase(suite, s21_tan_p);
+  tcase_add_test(s21_tan_p, s21_tanTEST);
+
   srunner_run_all(srunner, CK_VERBOSE);
   int number_failed = srunner_ntests_failed(srunner);
   srunner_free(srunner);
   return number_failed == 0 ? EXIT_SUCCESS : EXIT_FAILURE;
 }
+
+// протести синусы и косиенусы с даблмакс, они себя очень странно ведут после
+// 1е8 и больше
