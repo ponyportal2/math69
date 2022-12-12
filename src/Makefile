@@ -6,7 +6,7 @@ ifeq ($(UNAME),Linux)
 endif
 ifeq ($(UNAME),Darwin)
 	LFLAGS=-lcheck -lm
-	LEAK=leaks -quiet -atExit --
+	LEAK=CK_FORK=no leaks -quiet -atExit --
 	SYSFLAG=-D APPLE
 endif
 CFLAGS=-Wall -Werror -Wextra
@@ -46,11 +46,13 @@ test: s21_math.a
 
 localtest: s21_math.a
 	gcc $(SYSFLAG) $(CFLAGS) localtest.c -L. s21_math.a $(LFLAGS) -o test
-	$(LEAK) ./test
+	$(LEAK) ./test >leak.log
+	bash test_leak.sh
 
 leaks: s21_math.a
 	gcc $(SYSFLAG) $(CFLAGS) test.c -L. s21_math.a $(LFLAGS) -o test
-	$(LEAK) ./test > test.log
+	-./test > test.log
+	$(LEAK) ./test > leak.log
 	bash test_log.sh
 	bash test_leak.sh
 
