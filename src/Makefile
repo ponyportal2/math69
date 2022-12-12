@@ -44,6 +44,10 @@ test: s21_math.a
 	-./test > test.log
 	bash test_log.sh
 
+localtest: s21_math.a
+	gcc $(SYSFLAG) $(CFLAGS) localtest.c -L. s21_math.a $(LFLAGS) -o test
+	$(LEAK) ./test
+
 leaks: s21_math.a
 	gcc $(SYSFLAG) $(CFLAGS) test.c -L. s21_math.a $(LFLAGS) -o test
 	$(LEAK) ./test > test.log
